@@ -1,15 +1,24 @@
-const mongoose = require('mongoose');
+'use strict';
 
-const dbConnection = async () => {
+import mongoose from 'mongoose';
+
+export const dbConnection = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log('Base de datos online');
-    } catch (error) {
-        console.log(error);
-        throw new Error('Error a la hora de iniciar la base de datos');
-    }
-};
+        mongoose.connection.on('error', () => {
+            console.log('MongoDB | no se pudo conectar a mongoDB');
+            mongoose.disconnect();
+        });
 
-module.exports = {
-    dbConnection
+        mongoose.connection.on('open', () => {
+            console.log('MongoDB | conectado a la base de datos kinalSports');
+        });
+
+        await mongoose.connect(process.env.URI_MONGODB, {
+            serverSelectionTimeoutMS: 5000,
+            maxPoolSize: 10,
+        });
+    } catch (error) {
+        console.log(`Error al conectar la db: ${error}`);
+        process.exit(1);
+    }
 };
