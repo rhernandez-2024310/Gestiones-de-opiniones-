@@ -1,6 +1,11 @@
-import dotenv from 'dotenv';
-import { initServer } from './configs/app.js';
+import dotenv from 'dotenv'
+import { initServer } from './configs/app.js' 
 
-dotenv.config();
+dotenv.config()
 
-initServer();
+
+initServer()
+
+process.on('unhandledRejection', (err) => {
+    console.error(`[Error Crítico]: ${err.message}`)
+})
